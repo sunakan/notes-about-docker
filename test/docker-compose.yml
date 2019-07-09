@@ -1,0 +1,19 @@
+---
+
+version: "3.7"
+
+services:
+  app:
+    image: ruby:2.6.3
+    command: bash
+    tty: true
+    volumes:
+      - sshvolume:/home/hoge:ro
+
+volumes:
+  sshvolume:
+    name: sshvolume
+    driver: vieux/sshfs:latest
+    driver_opts:
+      sshcmd: vagrant@192.168.33.14:/home/vagrant/dummy-nas01
+      password: vagrant

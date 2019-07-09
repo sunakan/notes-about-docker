@@ -3,15 +3,6 @@
 version: "3.7"
 
 services:
-  fake-storage:
-    image: my-busybox
-    build:
-      context: containers/storage-server
-      dockerfile: Dockerfile
-    tty: true
-    volumes:
-      - ./fake-storage:/var/local/fake-storage
-
   app:
     working_dir: /app
     tty: true
@@ -19,12 +10,15 @@ services:
     build:
       context: containers/client
       dockerfile: Dockerfile
-    volumes:
-      - .:/app
     environment:
       ENV: $ENV
-      MOUNT_DEVICE: $MOUNT_DEVICE
-      MOUNT_POSITION: $MOUNT_POSITION
-      FILE_SYSTEM_TYPE: $FILE_SYSTEM_TYPE
-    links:
-      - fake-storage
+      SSHFS_USER: $SSHFS_USER
+      SSHFS_PASSWORD: $SSHFS_PASSWORD
+      SSHFS_DEVICE: $SSHFS_DEVICE
+      SSHFS_POSITION: $SSHFS_POSITION
+    cap_add:
+      - SYS_ADMIN
+    devices:
+      - /dev/fuse
+    volumes:
+      - sshfsvolume-aaa:/app/hoge

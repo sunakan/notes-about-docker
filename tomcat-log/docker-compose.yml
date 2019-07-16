@@ -1,0 +1,32 @@
+---
+
+version: "3.7"
+
+services:
+  tomcat:
+    image: my-tomcat
+    build:
+      context: ./tomcat
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    volumes:
+      - .:/app
+    environment:
+      TZ: $TZ
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: "127.0.0.1:24224"
+        tag: "docker.{{.Name}}"
+    links:
+      - logger
+
+  logger:
+    image: fluentd:v1.4-debian-2
+    ports:
+      - 24224:24224
+    volumes:
+      - ./tmp/log:/fluentd/log
+    environment:
+      TZ: $TZ
